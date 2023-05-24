@@ -12,6 +12,12 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use('/api/v1', router);
 
+
+
+mongoose.connect('mongodb+srv://naval1305:naval1234@cluster0.k0bgc2r.mongodb.net/?retryWrites=true&w=majority')
+.then(() => console.log("DB connected"))
+.catch((err) => console.log("DB Error =>", err));
+
 // app.get('/naval',Naval);
 // app.get('/navnath',Navnath);
 // app.get('/raul',Raul);
