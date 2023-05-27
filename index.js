@@ -13,9 +13,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use('/api/v1', router);
 
-
-
-mongoose.connect('mongodb+srv://naval1305:naval1234@cluster0.k0bgc2r.mongodb.net/')
+mongoose.connect('mongodb+srv://naval1305:naval1234@cluster0.k0bgc2r.mongodb.net/navalDB?retryWrites=true&w=majority')
 .then(() => console.log("DB connected"))
 .catch((err) => console.log("DB Error =>", err));
 
@@ -24,4 +22,4 @@ mongoose.connect('mongodb+srv://naval1305:naval1234@cluster0.k0bgc2r.mongodb.net
 // app.get('/raul',Raul);
 // app.get('/code',Code);
 
-app.listen(8001,()=> console.log("Working on port 8000"))
+app.listen(8001,() => console.log("Working on port 8001"));
