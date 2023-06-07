@@ -66,7 +66,7 @@ export const otpLogin = async (req, res) => {
         
         const updateUser = await Users.findByIdAndUpdate({ _id: userId }, { loginOtp: code }).exec(); // update the 2 scheamas
 
-        res.send("Check you email or number for otp.");
+        res.send("Check your email or number for otp.");
 
     } catch (error) {
         res.send(error)
