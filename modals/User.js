@@ -5,9 +5,10 @@ const User = new Schema({
     name :  String,
     email : String,
     password : String,
-    otp: String,
-    number: Number,
-    loginOtp: String,
+    pin: String,
+    number: String,
+    address: String,
+    pancard: String,
 });
 
 export default mongoose.model("Users",User)

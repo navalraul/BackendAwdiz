@@ -27,29 +27,34 @@ export const login = async (req, res) => {
 
 export const register = async (req, res) => {
     try {
-        const { userName, userEmail, userPassword, userConfirmPassword } = req.body;
-        if (!userName) return res.send("User name is requierd!");
-        if (!userEmail) return res.send("User email is required!")
-        if (!userPassword) return res.send("User Password is required!")
-        if (!userConfirmPassword) return res.send("User Confirm Password is required!")
-        if (userPassword.length <= 8) {
-            return res.send("User Password length is less than 8 ")
-        }
-        if (userConfirmPassword.length <= 8) {
-            return res.send("User Confirm Password length is less than 8 !")
-        }
-        if (userPassword != userConfirmPassword) {
-            return res.send("Password and Confirm Password Not matched!!")
-        }
-        const response = await Users.find({ email: userEmail }).exec();
-        // console.log(response,"response")
-        if (response.length ) {
-            return res.send("Email is already Taken or You are already resgistered!!");
-        }
+        const { Name, Email, Password, Pin, Number, Address, Pancard } = req.body;
+        if (!Name) return res.send("User name is requierd!");
+        if (!Email) return res.send("User email is required!")
+        if (!Password) return res.send("User Password is required!")
+        if (!Pin) return res.send("User Pin is required!")
+        if (!Number) return res.send("User Number is required!")
+        if (!Address) return res.send("User Address is required!")
+        if (!Pancard) return res.send("User Pancard is required!")
+        
+        const response = await Users.find({ email: Email}).exec();
+        if(response.length) return res.send("Email already present");
+
+        let secretkey = "naval";
+        let plaintextForPassword = Password;
+        let plaintextForPin = Pin;
+
+        const ciphertextForPassword = encrypt.encrypt(plaintextForPassword, secretkey, 256);
+        const ciphertextForPin = encrypt.encrypt(plaintextForPin, secretkey, 256);
+        
+        
         const user = new Users({
-            name: userName,
-            email: userEmail,
-            password: userPassword
+            name: Name,
+            email: Email,
+            password: ciphertextForPassword,
+            pin: ciphertextForPin,
+            number: Number,
+            address: Address,
+            pancard: Pancard
         });
         await user.save();
         return res.send("Resgistration Succesfull!")
