@@ -25,53 +25,121 @@ export const login = async (req, res) => {
 //     return res.send("Hi from Register....")
 // }
 
+
 export const register = async (req, res) => {
     try {
-        const { Name, Email, Password, Pin, Number, Address, Pancard } = req.body;
-        if (!Name) return res.send("User name is requierd!");
-        if (!Email) return res.send("User email is required!")
-        if (!Password) return res.send("User Password is required!")
-        if (!Pin) return res.send("User Pin is required!")
-        if (!Number) return res.send("User Number is required!")
-        if (!Address) return res.send("User Address is required!")
-        if (!Pancard) return res.send("User Pancard is required!")
-        
-        const response = await Users.find({ email: Email}).exec();
-        if(response.length) return res.send("Email already present");
+        const { name, email, password, pin, number, address, panCard } = req.body;
 
-        let secretkey = "naval";
-        let plaintextForPassword = Password;
-        let plaintextForPin = Pin;
-
-        const ciphertextForPassword = encrypt.encrypt(plaintextForPassword, secretkey, 256);
-        const ciphertextForPin = encrypt.encrypt(plaintextForPin, secretkey, 256);
-        
-        
-        const user = new Users({
-            name: Name,
-            email: Email,
-            password: ciphertextForPassword,
-            pin: ciphertextForPin,
-            number: Number,
-            address: Address,
-            pancard: Pancard
-        });
+        var secretkey = 'ios';
+        var plainPin = pin;
+        var plaintext = password;
+        var cipherText = encrypt.encrypt(plaintext, secretkey, 256);
+        var cipherPin = encrypt.encrypt(plainPin, secretkey, 256);
+        const user = new Users({ name, email, password: cipherText, pin: cipherPin, number, address, panCard })
         await user.save();
         return res.send("Resgistration Succesfull!")
+
     } catch (error) {
-        return res.send(error);
+        return res.send(error)
     }
 }
 
-
 export const updateUser = async (req, res) => {
     try {
-        const {email, name} = req.body;
+        const { email, name } = req.body;
         if (!email) return res.send("Email not found!")
-        if (!name) return res.send ("Name not found!")
-        const response = await Users.findOneAndUpdate({ email }, { name }).exec();
-        res.send(response);
-    } catch {
-        res.send(error)
+        if (!name) return res.send("Name not found!")
+        const response = await Users.find({ email }).exec();
+        console.log(response);
+        if (response) {
+            // const res = await Users.updateOne({ email }, { $set: { name: name } });
+            const user = await Users.findOneAndUpdate({ email }, { name: name  }).exec();
+            await user.save();
+            return res.send("record updated")
+            // return res.send(response[0])
+        } else {
+            return res.send("User not found!")
+        }
+    } catch (error) {
+        return res.send(error)
+    }
+}
+
+export const getUserByEmail = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) return res.send("Email not found!")
+        const response = await Users.find({ email }).exec();
+        if (response) {
+            return res.send(response[0])
+        } else {
+            return res.send("User not found!")
+        }
+    } catch (error) {
+        return res.send(error)
+    }
+}
+
+export const changeNumber = async (req, res) => {
+    try {
+        const { number ,id,pin} = req.body;
+        if(!number) return res.send("number is required.")
+        const changeNum = await Users.findByIdAndUpdate({ _id: id, pin }, { number });
+        await changeNum.save();
+        return res.send("number changed.")
+
+
+
+    } catch (error) {
+
+        return res.send(error, "error here")
+    }
+}
+
+export const changeEmail = async (req, res) => {
+    try {
+        const { email ,id,pin} = req.body;
+        if(!email) return res.send("email is required.")
+        const changeEmail = await Users.findByIdAndUpdate({ _id: id, pin }, { email });
+        await changeEmail.save();
+        return res.send("email changed.")
+
+
+
+    } catch (error) {
+
+        return res.send(error, "error here")
+    }
+}
+
+export const changeAddress = async (req, res) => {
+    try {
+        const { address ,id,pin} = req.body;
+        if(!address) return res.send("Address is required.")
+        const changeAddress = await Users.findByIdAndUpdate({ _id: id, pin }, { address });
+        await changeAddress.save();
+        return res.send("Address changed.")
+
+
+
+    } catch (error) {
+
+        return res.send(error, "error here")
+    }
+}
+
+export const changePanCardNum = async (req, res) => {
+    try {
+        const { panCard ,id,pin} = req.body;
+        if(!panCard) return res.send("Pan card number is required.")
+        const changePanCardNum = await Users.findByIdAndUpdate({ _id: id, pin }, { panCard });
+        await changePanCardNum.save();
+        return res.send("Pan card number changed.")
+
+
+
+    } catch (error) {
+
+        return res.send(error, "error here")
     }
 }
